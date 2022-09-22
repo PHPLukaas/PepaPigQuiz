@@ -3,8 +3,10 @@ package com.phplukaas.pepapigquiz.controller;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.phplukaas.pepapigquiz.R;
 import com.phplukaas.pepapigquiz.model.Question;
@@ -12,7 +14,7 @@ import com.phplukaas.pepapigquiz.model.QuestionBank;
 
 import java.util.Arrays;
 
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
     // Declare our view variables
     private TextView mQuestionTextView;
@@ -20,6 +22,7 @@ public class GameActivity extends AppCompatActivity {
     private Button mAnswer2Button;
     private Button mAnswer3Button;
     private Button mAnswer4Button;
+    private QuestionBank mQuestionBank = generateQuestionBank();
 
 
 
@@ -34,6 +37,26 @@ public class GameActivity extends AppCompatActivity {
         mAnswer2Button = findViewById(R.id.game_activity_button_2);
         mAnswer3Button = findViewById(R.id.game_activity_button_3);
         mAnswer4Button = findViewById(R.id.game_activity_button_4);
+
+        // Use the same listener for the four buttons.
+        // The view id value will be used to distinguish the button triggered
+        mAnswer1Button.setOnClickListener(this);
+        mAnswer2Button.setOnClickListener(this);
+        mAnswer3Button.setOnClickListener(this);
+        mAnswer4Button.setOnClickListener(this);
+
+        // Display question
+        displayQuestion(mQuestionBank.getCurrentQuestion());
+    }
+
+
+    private void displayQuestion(final Question question) {
+    // Set the text for the question text view and the four buttons
+        mQuestionTextView.setText(question.getQuestion());
+        mAnswer1Button.setText(question.getChoiceList().get(0));
+        mAnswer2Button.setText(question.getChoiceList().get(1));
+        mAnswer3Button.setText(question.getChoiceList().get(2));
+        mAnswer4Button.setText(question.getChoiceList().get(3));
     }
 
     private QuestionBank generateQuestionBank() {
@@ -83,6 +106,33 @@ public class GameActivity extends AppCompatActivity {
 
 
         return new QuestionBank(Arrays.asList(question1, question2, question3, question4));
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        int index;
+
+        if (v == mAnswer1Button) {
+            index = 0;
+        } else if (v == mAnswer2Button) {
+            index = 1;
+        } else if (v == mAnswer3Button) {
+            index = 2;
+        } else if (v == mAnswer4Button) {
+            index = 3;
+        } else {
+            throw new IllegalStateException("Unknown clicked view : " + v);
+        }
+
+        if (index == mQuestionBank.getCurrentQuestion().getAnswerIndex()) {
+            // Good answer
+            Toast.makeText(this, "Bonne réponse", Toast.LENGTH_SHORT).show();
+        } else {
+            // Wrong answer
+            Toast.makeText(this, "Mauvaise réponse", Toast.LENGTH_SHORT).show();
+        }
+
 
     }
 }
