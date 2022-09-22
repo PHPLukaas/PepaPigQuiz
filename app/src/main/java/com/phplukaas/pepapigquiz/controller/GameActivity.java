@@ -23,6 +23,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private Button mAnswer3Button;
     private Button mAnswer4Button;
     private QuestionBank mQuestionBank = generateQuestionBank();
+    private int mRemainingQuestionCount;
 
 
 
