@@ -1,13 +1,17 @@
-package com.phplukaas.pepapigquiz;
+package com.phplukaas.pepapigquiz.controller;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.phplukaas.pepapigquiz.R;
+import com.phplukaas.pepapigquiz.model.User;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize all the views
         mGreetingTextView = findViewById(R.id.main_textview_greeting);
-        mNameEditText = findViewById(R.id.main_edittext_name);
+        mNameEditText = findViewById(R  .id.main_edittext_name);
         mPlayButton = findViewById(R.id.main_button_start);
 
         // Disable button until user enters name
@@ -51,11 +55,15 @@ public class MainActivity extends AppCompatActivity {
 
         // Detect when user clicks button
         mPlayButton.setOnClickListener(v -> {
-            // Get user's name
-            String name = mNameEditText.getText().toString();
 
-            // Display greeting
-            mGreetingTextView.setText("Hello " + name + "!");
+            // Get user name
+            User mUser = new User();
+            mUser.setFirstName(mNameEditText.getText().toString());
+
+            // Intent to start GameActivity
+            Intent gameActivityIntent = new Intent(MainActivity.this, GameActivity.class);
+            startActivity(gameActivityIntent);
+
         });
 
 
