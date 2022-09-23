@@ -1,7 +1,9 @@
 package com.phplukaas.pepapigquiz.controller;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -24,7 +26,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private Button mAnswer4Button;
     private QuestionBank mQuestionBank = generateQuestionBank();
     private int mRemainingQuestionCount;
-
+    private Question mCurrentQuestion;
+    private int mScore;
 
 
     @Override
@@ -47,7 +50,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mAnswer4Button.setOnClickListener(this);
 
         // Display question
-        displayQuestion(mQuestionBank.getCurrentQuestion());
+        mCurrentQuestion = mQuestionBank.getCurrentQuestion();
+        displayQuestion(mCurrentQuestion);
+
+        mRemainingQuestionCount = 4;
+        mScore = 0;
     }
 
 
@@ -114,6 +121,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         int index;
 
+        // Get the index of the answer from the tag property of the button
         if (v == mAnswer1Button) {
             index = 0;
         } else if (v == mAnswer2Button) {
@@ -126,13 +134,39 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             throw new IllegalStateException("Unknown clicked view : " + v);
         }
 
+        // Check if the answer is correct
         if (index == mQuestionBank.getCurrentQuestion().getAnswerIndex()) {
             // Good answer
             Toast.makeText(this, "Bonne réponse", Toast.LENGTH_SHORT).show();
+            mScore++;
         } else {
             // Wrong answer
             Toast.makeText(this, "Mauvaise réponse", Toast.LENGTH_SHORT).show();
         }
+
+        // Check if this is the last question
+        mRemainingQuestionCount--;
+
+        if (mRemainingQuestionCount > 0) {
+            mCurrentQuestion = mQuestionBank.getNextQuestion();
+            displayQuestion(mCurrentQuestion);
+        } else {
+            // No question left, end the game
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder.setTitle("Félicitations !")
+                    .setMessage("Voici votre score: " + mScore)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    })
+                    .create()
+                    .show();
+        }
+
+
 
 
     }
